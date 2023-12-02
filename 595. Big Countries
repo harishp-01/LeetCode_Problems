@@ -1,0 +1,1 @@
+select name,population,area from world having area>=3000000 Or population>=25000000
