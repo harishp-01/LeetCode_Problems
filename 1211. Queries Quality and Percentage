@@ -1,8 +1,14 @@
-select
-query_name,
-round(avg(cast(rating as decimal) / position), 2) as quality,
-round(sum(case when rating < 3 then 1 else 0 end) * 100 / count(*), 2) as poor_query_percentage
-from
-queries
-group by
-query_name;
+WITH cte AS (
+  SELECT 
+    COALESCE(query_name, 'Unknown') AS query_name,
+    COALESCE(rating, 0) / NULLIF(position, 0) AS RatingDivPosition,
+    CASE WHEN rating < 3 THEN 1 ELSE 0 END AS BoolRating
+  FROM Queries
+)
+SELECT 
+  query_name,
+  ROUND(AVG(RatingDivPosition), 2) AS quality,
+  ROUND(AVG(BoolRating) * 100, 2) AS poor_query_percentage
+FROM cte
+WHERE query_name <> 'Unknown'
+GROUP BY query_name;
