@@ -1,0 +1,34 @@
+public int uniquePathsWithObstacles(int[][] mat) {
+        int m = mat.length;
+        int n = mat[0].length;
+
+        if(mat[0][0] == 1 || mat[m - 1][n - 1] == 1)
+            return 0;
+
+        Integer[][] memo = new Integer[m][n];
+
+        return findPaths(m - 1, n - 1, mat, memo);
+    }
+
+    private int findPaths(int r, int c, int[][] mat, Integer[][] memo){
+
+        if(r == 0 && c == 0)
+            return 1;
+
+        if(r < 0 || c < 0)
+            return 0;
+
+        if(mat[r][c] == 1)
+            return 0;
+
+        if(memo[r][c] != null)
+            return memo[r][c];
+
+        int up = findPaths(r - 1, c, mat, memo);
+        int left = findPaths(r, c - 1, mat, memo);
+
+        memo[r][c] = up + left;
+
+        return memo[r][c];
+
+    }
